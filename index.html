@@ -132,7 +132,8 @@
             }
 
             if (destinations.length > 0) {
-                const waypoints = [startingPoint].concat(destinations);
+                // Include the return to the starting point
+                const waypoints = [startingPoint].concat(destinations, startingPoint);
 
                 let totalDistance = 0;
                 let requests = [];
