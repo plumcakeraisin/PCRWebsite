@@ -107,6 +107,7 @@
         google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
 
         function calculateTotalDistance() {
+            const service = new google.maps.DistanceMatrixService();
             const startingPoint = document.getElementById('startingPoint').value;
             let destinations = [];
             for (let i = 1; i <= destinationCount; i++) {
@@ -117,37 +118,44 @@
             }
 
             if (destinations.length > 0) {
-                const service = new google.maps.DistanceMatrixService();
-                service.getDistanceMatrix(
-                    {
-                        origins: [startingPoint],
-                        destinations: destinations,
-                        travelMode: google.maps.TravelMode.DRIVING,
-                        unitSystem: google.maps.UnitSystem.METRIC,
-                    },
-                    callback
-                );
-            } else {
-                document.getElementById('result').innerText = 'Please enter at least one destination.';
-            }
-        }
+                const waypoints = [startingPoint].concat(destinations);
 
-        function callback(response, status) {
-            if (status == 'OK') {
                 let totalDistance = 0;
-                const results = response.rows[0].elements;
+                let requests = [];
 
-                for (let i = 0; i < results.length; i++) {
-                    const element = results[i];
-                    if (element.status === 'OK') {
-                        totalDistance += element.distance.value;
-                    }
+                for (let i = 0; i < waypoints.length - 1; i++) {
+                    requests.push(
+                        new Promise((resolve, reject) => {
+                            service.getDistanceMatrix(
+                                {
+                                    origins: [waypoints[i]],
+                                    destinations: [waypoints[i + 1]],
+                                    travelMode: google.maps.TravelMode.DRIVING,
+                                    unitSystem: google.maps.UnitSystem.METRIC,
+                                },
+                                (response, status) => {
+                                    if (status === 'OK') {
+                                        const distance = response.rows[0].elements[0].distance.value; // meters
+                                        resolve(distance);
+                                    } else {
+                                        reject(`Error calculating distance: ${status}`);
+                                    }
+                                }
+                            );
+                        })
+                    );
                 }
 
-                totalDistance = totalDistance / 1000; // Convert to kilometers
-                document.getElementById('result').innerText = `Total Distance: ${totalDistance.toFixed(2)} km`;
+                Promise.all(requests)
+                    .then(distances => {
+                        totalDistance = distances.reduce((acc, curr) => acc + curr, 0) / 1000; // Convert to kilometers
+                        document.getElementById('result').innerText = `Total Distance: ${totalDistance.toFixed(2)} km`;
+                    })
+                    .catch(error => {
+                        document.getElementById('result').innerText = error;
+                    });
             } else {
-                document.getElementById('result').innerText = `Error calculating distance: ${status}`;
+                document.getElementById('result').innerText = 'Please enter at least one destination.';
             }
         }
     </script>
