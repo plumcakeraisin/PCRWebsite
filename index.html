@@ -26,7 +26,7 @@
             display: block;
             margin: 10px 0 5px;
         }
-        input[type="text"], input[type="datetime-local"], select, textarea {
+        input[type="text"], input[type="date"], select, textarea {
             width: 100%;
             padding: 8px;
             margin: 4px 0;
@@ -45,11 +45,11 @@
 <body>
     <h2>Travel Booking Form</h2>
     <form id="travelForm">
-        <label for="startDateTime">Start Date and Time:</label>
-        <input type="datetime-local" id="startDateTime" name="startDateTime" required>
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" required>
 
-        <label for="endDateTime">End Date and Time:</label>
-        <input type="datetime-local" id="endDateTime" name="endDateTime" required>
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" required>
 
         <label for="startingPoint">Starting Point Description:</label>
         <input type="text" id="startingPoint" name="startingPoint" required>
@@ -119,9 +119,9 @@
             const service = new google.maps.DistanceMatrixService();
             const startingPoint = document.getElementById('startingPoint').value;
             const vehicleType = document.getElementById('vehicleType').value;
-            const startDateTime = new Date(document.getElementById('startDateTime').value);
-            const endDateTime = new Date(document.getElementById('endDateTime').value);
-            const days = Math.ceil((endDateTime - startDateTime) / (1000 * 60 * 60 * 24)); // Calculate the number of days
+            const startDate = new Date(document.getElementById('startDate').value);
+            const endDate = new Date(document.getElementById('endDate').value);
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Calculate the number of days (+1 to include the start date)
             
             let destinations = [];
             for (let i = 1; i <= destinationCount; i++) {
