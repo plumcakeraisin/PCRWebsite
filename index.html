@@ -59,7 +59,7 @@
 
         <div id="additionalDestinations"></div>
 
-        <span class="more-destinations" onclick="addDestination()">+ More Destination</span>
+        <span class="more-destinations" onclick="addDestination()">+ More Destination</span><br><br>
 
         <label for="vehicleType">Vehicle Type:</label>
         <select id="vehicleType" name="vehicleType" required>
@@ -69,10 +69,12 @@
             <option value="Tempo">Tempo</option>
             <option value="UrbanCruiser">UrbanCruiser</option>
             <option value="Caravan">Caravan</option>
-        </select>
+        </select><br><br>
 
-        <input type="submit" value="Submit">
+        <input type="button" value="Calculate Total Distance" onclick="calculateTotalDistance()">
     </form>
+
+    <div id="result"></div>
 
     <script>
         let destinationCount = 1;
@@ -103,6 +105,51 @@
         }
 
         google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
+
+        function calculateTotalDistance() {
+            const startingPoint = document.getElementById('startingPoint').value;
+            let destinations = [];
+            for (let i = 1; i <= destinationCount; i++) {
+                const destinationValue = document.getElementById(`destination${i}`).value;
+                if (destinationValue) {
+                    destinations.push(destinationValue);
+                }
+            }
+
+            if (destinations.length > 0) {
+                const service = new google.maps.DistanceMatrixService();
+                service.getDistanceMatrix(
+                    {
+                        origins: [startingPoint],
+                        destinations: destinations,
+                        travelMode: google.maps.TravelMode.DRIVING,
+                        unitSystem: google.maps.UnitSystem.METRIC,
+                    },
+                    callback
+                );
+            } else {
+                document.getElementById('result').innerText = 'Please enter at least one destination.';
+            }
+        }
+
+        function callback(response, status) {
+            if (status == 'OK') {
+                let totalDistance = 0;
+                const results = response.rows[0].elements;
+
+                for (let i = 0; i < results.length; i++) {
+                    const element = results[i];
+                    if (element.status === 'OK') {
+                        totalDistance += element.distance.value;
+                    }
+                }
+
+                totalDistance = totalDistance / 1000; // Convert to kilometers
+                document.getElementById('result').innerText = `Total Distance: ${totalDistance.toFixed(2)} km`;
+            } else {
+                document.getElementById('result').innerText = `Error calculating distance: ${status}`;
+            }
+        }
     </script>
 </body>
 </html>
