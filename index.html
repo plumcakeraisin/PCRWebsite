@@ -71,13 +71,22 @@
             <option value="Caravan">Caravan</option>
         </select><br><br>
 
-        <input type="button" value="Calculate Total Distance" onclick="calculateTotalDistance()">
+        <input type="button" value="Calculate Total Distance & Fare" onclick="calculateTotalDistanceAndFare()">
     </form>
 
     <div id="result"></div>
 
     <script>
         let destinationCount = 1;
+
+        const rateCard = {
+            HatchBack: { dailyRate: 1000, driverBata: 200, dailyKmLimit: 250, extraKmRate: 10, dailyTimeLimit: 12 },
+            Sedan: { dailyRate: 1500, driverBata: 225, dailyKmLimit: 250, extraKmRate: 12, dailyTimeLimit: 12 },
+            SUV: { dailyRate: 2000, driverBata: 250, dailyKmLimit: 250, extraKmRate: 14, dailyTimeLimit: 12 },
+            Tempo: { dailyRate: 2500, driverBata: 300, dailyKmLimit: 250, extraKmRate: 16, dailyTimeLimit: 12 },
+            UrbanCruiser: { dailyRate: 5000, driverBata: 350, dailyKmLimit: 250, extraKmRate: 18, dailyTimeLimit: 12 },
+            Caravan: { dailyRate: 10000, driverBata: 400, dailyKmLimit: 250, extraKmRate: 20, dailyTimeLimit: 12 }
+        };
 
         function initializeAutocomplete() {
             const startingPointInput = document.getElementById('startingPoint');
@@ -106,9 +115,14 @@
 
         google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
 
-        function calculateTotalDistance() {
+        function calculateTotalDistanceAndFare() {
             const service = new google.maps.DistanceMatrixService();
             const startingPoint = document.getElementById('startingPoint').value;
+            const vehicleType = document.getElementById('vehicleType').value;
+            const startDateTime = new Date(document.getElementById('startDateTime').value);
+            const endDateTime = new Date(document.getElementById('endDateTime').value);
+            const days = Math.ceil((endDateTime - startDateTime) / (1000 * 60 * 60 * 24)); // Calculate the number of days
+            
             let destinations = [];
             for (let i = 1; i <= destinationCount; i++) {
                 const destinationValue = document.getElementById(`destination${i}`).value;
@@ -149,7 +163,17 @@
                 Promise.all(requests)
                     .then(distances => {
                         totalDistance = distances.reduce((acc, curr) => acc + curr, 0) / 1000; // Convert to kilometers
-                        document.getElementById('result').innerText = `Total Distance: ${totalDistance.toFixed(2)} km`;
+                        const vehicleRates = rateCard[vehicleType];
+                        const dailyKmLimit = days * vehicleRates.dailyKmLimit;
+
+                        let fare;
+                        if (dailyKmLimit >= totalDistance) {
+                            fare = days * (vehicleRates.dailyRate + vehicleRates.driverBata);
+                        } else {
+                            fare = days * (vehicleRates.dailyRate + vehicleRates.driverBata) + (totalDistance - dailyKmLimit) * vehicleRates.extraKmRate;
+                        }
+
+                        document.getElementById('result').innerHTML = `Total Distance: ${totalDistance.toFixed(2)} km<br>Estimated Fare: ₹${fare.toFixed(2)}`;
                     })
                     .catch(error => {
                         document.getElementById('result').innerText = error;
