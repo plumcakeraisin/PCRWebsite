@@ -1,3 +1,5 @@
+// Inject the footer HTML into the #footer-placeholder div
+document.getElementById('footer-placeholder').innerHTML = `
 <footer class="footer">
     <div class="footer-container">
         <div class="footer-left">
@@ -10,3 +12,4 @@
         </div>
     </div>
 </footer>
+`;
