@@ -1,4 +1,5 @@
-document.getElementById('travel-booking-form').innerHTML = `
+// Inject the travel booking form HTML into the #content div
+document.getElementById('content').innerHTML = `
 <div class="container">
     <h2>Travel Booking Form</h2>
     <form id="travelForm">
@@ -37,26 +38,7 @@ document.getElementById('travel-booking-form').innerHTML = `
 
 let destinationCount = 1;
 
-const rateCard = {
-    HatchBack: { dailyRate: 1000, driverBata: 200, dailyKmLimit: 250, extraKmRate: 10, dailyTimeLimit: 12 },
-    Sedan: { dailyRate: 1500, driverBata: 225, dailyKmLimit: 250, extraKmRate: 12, dailyTimeLimit: 12 },
-    SUV: { dailyRate: 2000, driverBata: 250, dailyKmLimit: 250, extraKmRate: 14, dailyTimeLimit: 12 },
-    Tempo: { dailyRate: 2500, driverBata: 300, dailyKmLimit: 250, extraKmRate: 16, dailyTimeLimit: 12 },
-    UrbanCruiser: { dailyRate: 5000, driverBata: 350, dailyKmLimit: 250, extraKmRate: 18, dailyTimeLimit: 12 },
-    Caravan: { dailyRate: 10000, driverBata: 400, dailyKmLimit: 250, extraKmRate: 20, dailyTimeLimit: 12 }
-};
-
-function initializeAutocomplete() {
-    const startingPointInput = document.getElementById('startingPoint');
-    const destination1Input = document.getElementById('destination1');
-
-    const startingPointAutocomplete = new google.maps.places.Autocomplete(startingPointInput);
-    const destination1Autocomplete = new google.maps.places.Autocomplete(destination1Input);
-
-    startingPointAutocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
-    destination1Autocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
-}
-
+// Add a new destination input field
 function addDestination() {
     destinationCount++;
     const newDestination = document.createElement('div');
@@ -65,23 +47,17 @@ function addDestination() {
         <label for="destination${destinationCount}">Destination ${destinationCount}:</label>
         <input type="text" id="destination${destinationCount}" name="destination${destinationCount}"><br>`;
     document.getElementById('additionalDestinations').appendChild(newDestination);
-
-    // Add Google Maps autocomplete to the new destination field
-    const newDestinationInput = document.getElementById(`destination${destinationCount}`);
-    const newDestinationAutocomplete = new google.maps.places.Autocomplete(newDestinationInput);
-    newDestinationAutocomplete.setFields(['address_components', 'geometry', 'icon', 'name']);
 }
 
-google.maps.event.addDomListener(window, 'load', initializeAutocomplete);
-
+// Calculate the total distance and fare based on user input
 function calculateTotalDistanceAndFare() {
     const service = new google.maps.DistanceMatrixService();
     const startingPoint = document.getElementById('startingPoint').value;
     const vehicleType = document.getElementById('vehicleType').value;
     const startDate = new Date(document.getElementById('startDate').value);
     const endDate = new Date(document.getElementById('endDate').value);
-    const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1; // Calculate the number of days (+1 to include the start date)
-    
+    const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
     let destinations = [];
     for (let i = 1; i <= destinationCount; i++) {
         const destinationValue = document.getElementById(`destination${i}`).value;
@@ -91,9 +67,7 @@ function calculateTotalDistanceAndFare() {
     }
 
     if (destinations.length > 0) {
-        // Include the return to the starting point
         const waypoints = [startingPoint].concat(destinations, startingPoint);
-
         let totalDistance = 0;
         let requests = [];
 
@@ -109,7 +83,7 @@ function calculateTotalDistanceAndFare() {
                         },
                         (response, status) => {
                             if (status === 'OK') {
-                                const distance = response.rows[0].elements[0].distance.value; // meters
+                                const distance = response.rows[0].elements[0].distance.value;
                                 resolve(distance);
                             } else {
                                 reject(`Error calculating distance: ${status}`);
@@ -122,7 +96,7 @@ function calculateTotalDistanceAndFare() {
 
         Promise.all(requests)
             .then(distances => {
-                totalDistance = distances.reduce((acc, curr) => acc + curr, 0) / 1000; // Convert to kilometers
+                totalDistance = distances.reduce((acc, curr) => acc + curr, 0) / 1000;
                 const vehicleRates = rateCard[vehicleType];
                 const dailyKmLimit = days * vehicleRates.dailyKmLimit;
 
