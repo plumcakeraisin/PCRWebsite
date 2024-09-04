@@ -1,3 +1,4 @@
+// Inject the navbar HTML into the #navbar div
 document.getElementById('navbar').innerHTML = `
 <div class="navbar" id="myNavbar">
     <a href="#home">Home</a>
@@ -10,6 +11,7 @@ document.getElementById('navbar').innerHTML = `
 </div>
 `;
 
+// Function to toggle the navbar for mobile view
 function toggleNavbar() {
     var x = document.getElementById("myNavbar");
     if (x.className === "navbar") {
