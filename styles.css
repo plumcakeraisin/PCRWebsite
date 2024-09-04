@@ -9,59 +9,76 @@ body {
 
 /* Nav Bar Styles */
 .navbar {
-    overflow: hidden;
+    display: flex;
+    justify-content: flex-end;
     background-color: #333;
+    padding: 0 20px;
+    align-items: center;
 }
 
-/* Navbar link styles */
+.navbar-links {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;  /* Takes up all available space */
+    max-width: 800px; /* Adjust this width based on how much space you want the navbar to occupy */
+    margin-right: auto; /* Pushes the links to the right */
+}
+
 .navbar a {
-    float: left;
     display: block;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    flex: 1; /* Distribute space evenly among the links */
 }
 
-/* Change link color on hover */
 .navbar a:hover {
     background-color: #ddd;
     color: black;
 }
 
-/* Hide the icon by default */
 .navbar .icon {
     display: none;
 }
 
-/* Responsive menu: show the icon and hide other links */
 @media screen and (max-width: 600px) {
+    .navbar-links {
+        flex-direction: column;
+        max-width: 100%; /* Full width for mobile */
+    }
+
     .navbar a:not(:first-child) {
         display: none;
     }
+
     .navbar a.icon {
         float: right;
         display: block;
     }
 }
 
-/* When the navbar is responsive, show links in a block */
 @media screen and (max-width: 600px) {
     .navbar.responsive {
         position: relative;
     }
+
     .navbar.responsive .icon {
         position: absolute;
         right: 0;
         top: 0;
     }
+
     .navbar.responsive a {
         float: none;
         display: block;
         text-align: left;
     }
-}
 
+    .navbar.responsive .navbar-links {
+        flex-direction: column;
+    }
+}
 /* Footer Styles */
 .footer {
     background-color: #222;
