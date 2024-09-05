@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - PowerUp Money</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #0066cc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .post {
+            margin-bottom: 40px;
+        }
+
+        .post h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .post p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .post .date {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #333;
+            color: #f2f2f2;
+            text-align: center;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            left: 0;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #f2f2f2;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Nav Bar Styles */
+        .navbar {
+            background-color: #e0f7fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar .menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar a {
+            color: #000;
+            text-decoration: none;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .navbar a:hover {
+            color: #000;
+        }
+
+        .navbar a.active::after {
+            content: '•';
+            position: absolute;
+            right: -10px;
+            color: #007bff;
+        }
+
+        .navbar .icon {
+            display: none;
+        }
+
+        @media screen and (max-width: 600px) {
+            .navbar .menu {
+                display: none;
+            }
+            .navbar .icon {
+                display: block;
+                cursor: pointer;
+            }
+        }
+
+        .navbar.responsive .menu {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            z-index: 1;
+        }
+
+        .navbar.responsive .menu a {
+            color: #fff;
+            padding: 15px;
+            border-bottom: 1px solid #555;
+        }
+
+        .navbar.responsive .menu a:hover {
+            background-color: #444;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Nav Bar -->
+    <div class="navbar" id="myNavbar">
+        <div class="logo">PowerUp Money</div>
+        <div class="menu">
+            <a href="index.html">PowerUp Money</a>
+            <a href="p2p.html">PowerUp P2P</a>
+            <a href="calculators.html">Calculators</a>
+            <a href="blog.html" class="active">Blogs</a>
+        </div>
+        <span class="icon" onclick="toggleNavbar()">&#9776;</span>
+    </div>
+
+    <div class="container">
+        <h1>Our Latest Blogs</h1>
+        
+        <div class="post">
+            <h2>Blog Post Title 1</h2>
+            <div class="date">Published on September 5, 2024</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam fermentum, lorem a dignissim eleifend, orci orci sollicitudin lorem, nec malesuada elit est nec turpis. Curabitur vehicula odio at ligula sollicitudin, vel blandit lectus convallis.</p>
+        </div>
+
+        <div class="post">
+            <h2>Blog Post Title 2</h2>
+            <div class="date">Published on August 30, 2024</div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam fermentum, lorem a dignissim eleifend, orci orci sollicitudin lorem, nec malesuada elit est nec turpis. Curabitur vehicula odio at ligula sollicitudin, vel blandit lectus convallis.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 PowerUp Money. All rights reserved. | <a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a></p>
+    </div>
+
+    <script>
+        function toggleNavbar() {
+            var x = document.getElementById("myNavbar");
+            if (x.className === "navbar") {
+                x.className += " responsive";
+            } else {
+                x.className = "navbar";
+            }
+        }
+    </script>
+</body>
+</html>
